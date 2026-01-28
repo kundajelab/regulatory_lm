@@ -1,0 +1,40 @@
+# ARSENAL
+
+This repo contains all code for the ARSENAL language modeling project. 
+
+Pretrained models and relevant data not from other publications can be found at https://www.synapse.org/Synapse:syn72351987/wiki/ 
+
+# Model Training
+To train an ARSENAL model, you will need a config yml file. Examples can be found in the src/regulatory_lm/config/ folder. This file should contain all the relevant parameters for the model's embedder, encoder, and decoder modules, relevant training parameters (learning rate, number of epochs, mask probability, etc...), and relevant data files (training dataset, reference genome, etc...)
+
+You can view the modeling options in src/regulatory_lm/modeling/model.py, and an exhaustive list of the parameters used in the relevant training script. 
+
+To train an ARSENAL model, navigate to the src/ folder and run the following command:
+
+`python regulatory_lm.modeling.train_peaks_with_repeat_suppression_and_fourier_loss [PATH_TO_CONFIG]`
+
+# Important Notebooks
+We provide notebooks for important use cases of the ARSENAL model
+
+`notebooks/nucleotide_dependencies.ipynb` - runs visualization and nucleotide dependency analyses for supplied regulatory regions
+`notebooks/chrombpnet_generation.ipynb` - runs supervised model-guided sequence generation as demonstrated in the paper. Can easily be extended to other use cases and objectives. 
+
+
+# Downstream Supervised Models
+To apply ARSENAL embeddings to train a downstream ChromBPNet model, [this repo](https://github.com/amanpatel101/arsenal-chrombpnet) should be installed. 
+
+First, run `export ARSENAL_MODEL_DIR=[PATH TO ARSENAL REPO]`
+
+To train an ARSENAL+ChromBPNet model, run the following command: `chrombpnet train --model_type arsenal-chrombpnet --out_dir [OUTPUT DIR] --input_embedding_dim 768 --arsenal_output_type embedding --peaks [PEAK FILE] --negatives [NEGATIVE FILE] --bigwig [BIGWIG FILE] --bias [BIAS MODEL FILE] --fasta [REFERENCE GENOME] --chrom_sizes [CHROM SIZES FILE] --arsenal_model [ARSENAL MODEL .PTH FILE] --arsenal_input_size 350 --num_layers_avg [LAST N EMBEDDING LAYERS TO AVERAGE]`
+
+To score variants using this trained model, run the following command: `snp_score -l [VARIANT LIST] -g [REFERENCE GENOME] -s [CHROM SIZES FILE] --model_type arsenal-chrombpnet --model [BEST MODEL .ckpt FILE] --out_prefix [OUTPUT PREFIX/DIR] --total_shuf 2`
+
+To train a regular ChromBPNet model for comparison, run the following command: `chrombpnet train --model_type chrombpnet --out_dir [OUTPUT DIR] --peaks [PEAK FILE] --negatives [NEGATIVE FILE] --bigwig [BIGWIG FILE] --bias [BIAS MODEL FILE] --fasta [REFERENCE GENOME] --chrom_sizes [CHROM SIZES FILE]`
+
+To score variants using this trained model, run the following command: `snp_score -l [VARIANT LIST] -g [REFERENCE GENOME] -s [CHROM SIZES FILE] --model_type chrombpnet --model [BEST MODEL .pt FILE] --out_prefix [OUTPUT PREFIX/DIR] --total_shuf 2`
+
+# TF-MoDISco Analysis
+To run TF-MoDISco analysis on ARSENAL models, you must have [TF-MoDISco](https://github.com/jmschrei/tfmodisco-lite) installed. Then, navigate to `src/` and run the following command: `bash regulatory_lm/evals/run_modisco_pipeline.sh [PEAK FILE] [ARSENAL MODEL DIR] [CHECKPOINT NUMBER] [OUTPUT DIR] [DATA FORMAT (bed or narrowpeak)]`
+
+# DART-EVAL Benchmarking
+We include benchmarking on two zero-shot DART-EVAL tasks in the ARSENAL paper. Code to run these tasks exists in the `regulatory_lm` branch of that repo. 

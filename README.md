@@ -34,7 +34,7 @@ To train a regular ChromBPNet model for comparison, run the following command: `
 To score variants using this trained model, run the following command: `snp_score -l [VARIANT LIST] -g [REFERENCE GENOME] -s [CHROM SIZES FILE] --model_type chrombpnet --model [BEST MODEL .pt FILE] --out_prefix [OUTPUT PREFIX/DIR] --total_shuf 2`
 
 # TF-MoDISco Analysis
-To run TF-MoDISco analysis on ARSENAL models, you must have [TF-MoDISco](https://github.com/jmschrei/tfmodisco-lite) installed. Then, navigate to `src/` and run the following command: `bash regulatory_lm/evals/run_modisco_pipeline.sh [PEAK FILE] [ARSENAL MODEL DIR] [CHECKPOINT NUMBER] [OUTPUT DIR] [DATA FORMAT (bed or narrowpeak)]`
+To run TF-MoDISco analysis on ARSENAL models, you must have [TF-MoDISco](https://github.com/jmschrei/tfmodisco-lite) installed. Then, navigate to `src/` and run the following command: `bash regulatory_lm/evals/run_modisco_pipeline.sh [PEAK FILE] [ARSENAL MODEL DIR] [CHECKPOINT NUMBER] [OUTPUT DIR] [DATA FORMAT (bed or narrowpeak)] [MEME MOTIF DB]`
 
 # DART-EVAL Benchmarking
 We include benchmarking on two zero-shot DART-EVAL tasks in the ARSENAL paper. Code to run these tasks exists in the `regulatory_lm` branch of that repo. 

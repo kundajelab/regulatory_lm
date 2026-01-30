@@ -1,0 +1,69 @@
+output_dir: /oak/stanford/groups/akundaje/patelas/arsenal_test/ #Replace with your path
+peak_file: /users/patelas/scratch//ENCFF420VPZ_processed.bed #Replace with your path
+genome: /oak/stanford/groups/akundaje/patelas/regulatory_lm/data/hg38_repeat_lowercase.fa #Replace with your path
+model: RegulatoryLM
+embedder: InputSeqOnlyEmbedder
+encoder: TransformerLMWithROPE
+decoder: BERTStyleDecoder
+seed: 0
+data_format: bed
+batch_size: 1024
+repeat_weight: 0
+fourier_loss_weight: 0.002
+motif_low: 6
+motif_high: 20
+smoothing_factor: 5
+min_stretch: 30
+embedding_size: 768
+num_encoder_layers: 8
+num_epochs: 300
+max_jitter: 50
+seq_len: 350
+mask_prob: 0.15
+early_stopping: false
+patience: 7
+shuffle: true
+train_chrom_list:  [
+        "chr1",
+        "chr2",
+        "chr3",
+        "chr4",
+        "chr7",
+        "chr8",
+        "chr9",
+        "chr11",
+        "chr12",
+        "chr13",
+        "chr15",
+        "chr16",
+        "chr17",
+        "chr19",
+        "chrX",
+        "chrY"
+    ]
+
+valid_chrom_list: [
+        "chr6",
+        "chr21"
+    ]
+
+test_chrom_list: [
+        "chr5",
+        "chr10",
+        "chr14",
+        "chr18",
+        "chr20",
+        "chr22"
+    ]
+float_dtype: bfloat16
+num_real_tokens: 4
+optimizer: adamw
+optimizer_params:
+  lr: 1.e-4
+  weight_decay: 1.e-6
+scheduler_params:
+  warmup_perc: 0.01
+  min_lr: 1.e-4
+encoder_kwargs:
+  dim_feedforward: 3072
+  norm_first: false

@@ -20,7 +20,7 @@ torch._dynamo.config.suppress_errors = True
 def parse_args():
 	parser = argparse.ArgumentParser(description="Predicts probabilities for modisco given a model and set of peaks")
 	parser.add_argument("--peak_file", type=str, help="List of regions to predict on")
-	parser.add_argument("--genome_fa", type=str, help="Genome Fasta", default="/mnt/lab_data2/regulatory_lm/oak_backup/GRCh38_no_alt_analysis_set_GCA_000001405.15.fasta")
+	parser.add_argument("--genome_fa", type=str, help="Genome Fasta")
 	parser.add_argument("--out_dir", type=str, help="Output directory")
 	parser.add_argument("--data_format", type=str, help="Format of peak file", choices=["bed", "narrowpeak"], default="narrowpeak")
 	parser.add_argument("--batch_size", type=int, help="Batch size", default=64)

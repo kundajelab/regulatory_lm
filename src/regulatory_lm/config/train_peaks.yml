@@ -1,6 +1,6 @@
-output_dir: /oak/stanford/groups/akundaje/patelas/arsenal_test/ #Replace with your path
-peak_file: /users/patelas/scratch//ENCFF420VPZ_processed.bed #Replace with your path
-genome: /oak/stanford/groups/akundaje/patelas/regulatory_lm/data/hg38_repeat_lowercase.fa #Replace with your path
+output_dir: /scratch/m000097/patelas/env_test/ #Replace with your path
+peak_file: /projects/m000097/patelas/regulatory_lm/data/ENCFF420VPZ_processed.bed #Replace with your path
+genome: /projects/m000097/patelas/regulatory_lm/data/hg38_repeat_lowercase.fa #Replace with your path
 model: RegulatoryLM
 embedder: InputSeqOnlyEmbedder
 encoder: TransformerLMWithROPE

@@ -1,20 +1,14 @@
 #!/bin/bash
 
-# Source environment modules setup
-source /etc/profile.d/modules.sh
-
-# Now you can use "module"!
-module load meme
-
-
 peak_file=$1
 model_dir=$2
 checkpoint=$3
 out_dir=$4
 data_format=$5
-motif_db=$6
+ref_genome=$6
+motif_db=$7
 
-python -m regulatory_lm.evals.modisco_predict_probs --peak_file $peak_file --model_dir $model_dir --checkpoint $checkpoint --out_dir $out_dir --data_format $data_format
+python -m regulatory_lm.evals.modisco_predict_probs --peak_file $peak_file --model_dir $model_dir --checkpoint $checkpoint --out_dir $out_dir --data_format $data_format --genome_fa $ref_genome
     
 cd $out_dir
 

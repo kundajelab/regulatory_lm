@@ -15,6 +15,10 @@ To train an ARSENAL model, navigate to the src/ folder and run the following com
 
 `python regulatory_lm.modeling.train_peaks_with_repeat_suppression_and_fourier_loss [PATH_TO_CONFIG]`
 
+If you'd like to train a model without the Fourier loss function for comparison, you can run this command instead:
+
+`python regulatory_lm.modeling.train_peaks_with_repeat_suppression.py [PATH_TO_CONFIG]`
+
 # Important Notebooks
 We provide notebooks for important use cases of the ARSENAL model
 

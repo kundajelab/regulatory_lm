@@ -4,6 +4,8 @@ This repo contains all code for the ARSENAL language modeling project.
 
 Pretrained models and relevant data not from other publications can be found at https://www.synapse.org/Synapse:syn72351987/wiki/ 
 
+To set up a conda environment for this repo, run `bash setup_env.sh [ENV NAME]`
+
 # Model Training
 To train an ARSENAL model, you will need a config yml file. Examples can be found in the src/regulatory_lm/config/ folder. This file should contain all the relevant parameters for the model's embedder, encoder, and decoder modules, relevant training parameters (learning rate, number of epochs, mask probability, etc...), and relevant data files (training dataset, reference genome, etc...)
 

@@ -19,7 +19,10 @@ To train an ARSENAL model, navigate to the src/ folder and run the following com
 We provide notebooks for important use cases of the ARSENAL model
 
 `notebooks/nucleotide_dependencies.ipynb` - runs visualization and nucleotide dependency analyses for supplied regulatory regions
+
 `notebooks/chrombpnet_generation.ipynb` - runs supervised model-guided sequence generation as demonstrated in the paper. Can easily be extended to other use cases and objectives. 
+
+`notebooks/supervised_variant_scoring_african.ipynb` and `notebooks/supervised_variant_scoring_yoruban.ipynb` - runs statistics on supervised variant scores (see below) - requires ground truth scores from [DART-EVAL](https://github.com/kundajelab/DART-Eval).
 
 
 # Downstream Supervised Models
@@ -39,4 +42,4 @@ To score variants using this trained model, run the following command: `snp_scor
 To run TF-MoDISco analysis on ARSENAL models, navigate to `src/` and run the following command: `bash regulatory_lm/evals/run_modisco_pipeline.sh [PEAK FILE] [ARSENAL MODEL DIR] [CHECKPOINT NUMBER] [OUTPUT DIR] [DATA FORMAT (bed or narrowpeak)] [REFERENCE GENOME] [MEME MOTIF DB]`
 
 # DART-EVAL Benchmarking
-We include benchmarking on two zero-shot DART-EVAL tasks in the ARSENAL paper. Code to run these tasks exists in the `regulatory_lm` branch of that repo. Note that you will likely need to install the `rotary-embedding-torch` package to the environment you use for DART-EVAL.  
+We include benchmarking on two zero-shot [DART-EVAL](https://github.com/kundajelab/DART-Eval) tasks in the ARSENAL paper. Code to run these tasks exists in the `regulatory_lm` branch of that repo. Note that you will likely need to install the `rotary-embedding-torch` package to the environment you use for DART-EVAL.  

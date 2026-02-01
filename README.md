@@ -22,9 +22,9 @@ If you'd like to train a model without the Fourier loss function for comparison,
 # Important Notebooks
 We provide notebooks for important use cases of the ARSENAL model
 
-`notebooks/nucleotide_dependencies.ipynb` - runs visualization and nucleotide dependency analyses for supplied regulatory regions
+`notebooks/regulatory_region_analysis.ipynb` - runs visualization and nucleotide dependency analyses for supplied regulatory regions
 
-`notebooks/chrombpnet_generation.ipynb` - runs supervised model-guided sequence generation as demonstrated in the paper. Can easily be extended to other use cases and objectives. 
+`notebooks/guided_generation.ipynb` - runs supervised model-guided sequence generation as demonstrated in the paper. Can easily be extended to other use cases and objectives. 
 
 `notebooks/supervised_variant_scoring_african.ipynb` and `notebooks/supervised_variant_scoring_yoruban.ipynb` - runs statistics on supervised variant scores (see below) - requires ground truth scores from [DART-EVAL](https://github.com/kundajelab/DART-Eval).
 
@@ -47,3 +47,16 @@ To run TF-MoDISco analysis on ARSENAL models, navigate to `src/` and run the fol
 
 # DART-EVAL Benchmarking
 We include benchmarking on two zero-shot [DART-EVAL](https://github.com/kundajelab/DART-Eval) tasks in the ARSENAL paper. Code to run these tasks exists in the `regulatory_lm` branch of that repo. Note that you will likely need to install the `rotary-embedding-torch` package to the environment you use for DART-EVAL.  
+
+# Analysis With Other DNALMs
+We include results from Caduceus and HyenaDNA in the paper. 
+
+The notebook `notebooks/nuc_deps_other_models.ipynb` allows for visualization of regulatory regions using these two models. 
+
+To run TF-MoDISco using these models, you can run the following commands:
+
+`bash regulatory_lm/evals/modisco_dnalms/run_modisco_pipeline_hyena.sh [PEAK FILE] [OUTPUT DIR] [DATA FORMAT (bed or narrowpeak)] [REFERENCE GENOME] [MEME MOTIF DB]`
+
+`bash regulatory_lm/evals/modisco_dnalms/run_modisco_pipeline_caduceus.sh [PEAK FILE] [OUTPUT DIR] [DATA FORMAT (bed or narrowpeak)] [REFERENCE GENOME] [MEME MOTIF DB]`
+
+

@@ -15,17 +15,23 @@ def parse_args():
 	return args
 
 def has_lowercase_stretch(s: str, length: int) -> bool:
-    count = 0
-    for c in s:
-        if c.islower():
-            count += 1
-            if count >= length:
-                return True
-        else:
-            count = 0
-    return False
+	'''
+	Detects lowercase stretches in a sequence
+	'''
+	count = 0
+	for c in s:
+		if c.islower():
+			count += 1
+			if count >= length:
+				return True
+		else:
+			count = 0
+	return False
 
 def subset_table(peak_table, stretch_len, seq_len, data_format, genome):
+	'''
+	Takes in a table of peaks/regions and subsets them to only contain the regions without repeat stretches of a certain length
+	'''
 	to_keep = []
 	for seq in range(len(peak_table)):
 		chrom = peak_table.loc[seq, 0]

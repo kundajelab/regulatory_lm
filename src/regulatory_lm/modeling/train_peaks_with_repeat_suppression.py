@@ -64,6 +64,9 @@ def run_epoch(model, dloader, device, mask_prob, repeat_weight, num_real_tokens,
 
 
 def train_model(model, train_loader, valid_loader, num_epochs, output_dir, early_stopping, patience, float_dtype, mask_prob, repeat_weight, num_real_tokens, optimizer_cls, optimizer_params):
+    '''
+    Performs model training. For each epoch, performs the training and validation steps and logs the relevant losses
+    '''
     print("Parameter count: ", sum(p.numel() for p in model.parameters()))
 
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")

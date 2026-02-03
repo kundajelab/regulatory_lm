@@ -30,6 +30,10 @@ def parse_args():
 
 
 def predict_probs(model, dataloader, num_real_tokens, out_dir, device, optimizer=None):
+	'''
+	This function takes in a model and dataloader and predicts masked probabilities to use for Modisco from that data
+	Each probability is normalized by dividing by the average predicted probability for that nucleotide across the sequence
+	'''
 	# model, _, _, _ = load_model(model, None, state_path)
 	model.eval()
 	model.to(device)
@@ -59,13 +63,11 @@ def predict_probs(model, dataloader, num_real_tokens, out_dir, device, optimizer
 			probs_norm[:,:,ind] = masked_probs[i]
 		probs_norm = probs_norm.permute(0,2,1)
 		nuc_average = torch.mean(probs_norm, dim=1).unsqueeze(1)
-		# nuc_average_expanded = nuc_average.unsqueeze(2)
 		normalized = probs_norm / nuc_average
 		epsilon = 1e-10
 		normalized = normalized + (normalized == 0).to(dtype=torch.float32) * epsilon
 		probs_norm = (probs_norm * torch.log(normalized)).to(dtype=torch.float32).cpu().numpy(force=True)
 
-		# masked_probs = np.stack(masked_probs, axis=1)  # Stack along sequence length
 		
 		del logits, probs, nuc_average#, nuc_average_expanded
 		torch.cuda.empty_cache()

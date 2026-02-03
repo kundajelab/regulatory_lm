@@ -24,6 +24,9 @@ class NarrowpeakDataset(Dataset):
 		return len(self.regions)
 
 	def load_regions(self):
+		'''
+		Loads a set of regions from a given input file
+		'''
 		chrom_set = set(self.chrom_list)
 		peak_regions = []
 		# for encid in os.listdir(self.data_dir):
@@ -42,12 +45,14 @@ class NarrowpeakDataset(Dataset):
 
 
 	def _apply_jitter(self, start):
+		'''
+		Randomly shifts the sequence by a certain amount
+		'''
 		jitter = random.randint(-self._jitter, self._jitter)
 		start += jitter
 		return start
 
 	def __getitem__(self, idx):
-		super().__init__()
 		chrom, start, end = self.regions[idx]
 		if self.mode == "train":
 			curr_len = end - start
@@ -76,6 +81,10 @@ class BedDataset(Dataset):
 		return len(self.regions)
 
 	def load_regions(self):
+		'''
+		Loads a set of regions from a given input file
+		'''
+
 		chrom_set = set(self.chrom_list)
 		# for encid in os.listdir(self.data_dir):
 		#     curr_filename = os.path.join(self.data_dir, encid, "preprocessing/downloads/peaks.bed.gz")
@@ -89,12 +98,14 @@ class BedDataset(Dataset):
 
 
 	def _apply_jitter(self, start):
+		'''
+		Randomly shifts the sequence by a certain amount
+		'''
 		jitter = random.randint(-self._jitter, self._jitter)
 		start += jitter
 		return start
 
 	def __getitem__(self, idx):
-		super().__init__()
 		chrom, start, end = self.regions.loc[idx, 0], self.regions.loc[idx, 1], self.regions.loc[idx, 2]
 		if self.mode == "train":
 			curr_len = end - start
@@ -124,12 +135,11 @@ class NarrowpeakDatasetWithRepeatMasking(Dataset):
 		return len(self.regions)
 
 	def load_regions(self):
+		'''
+		Loads a set of regions from a given input file
+		'''
 		chrom_set = set(self.chrom_list)
 		peak_regions = []
-		# for encid in os.listdir(self.data_dir):
-		#     curr_filename = os.path.join(self.data_dir, encid, "preprocessing/downloads/peaks.bed.gz")
-		#     if not os.path.exists(curr_filename):
-		#         continue
 		peak_data = pd.read_csv(self.peak_file, sep="\t", header=None)
 		peak_data = peak_data.loc[peak_data[0].isin(chrom_set)].reset_index(drop=True)
 		peak_data["true_start"] = peak_data[1] + peak_data[9] - self.seq_len // 2
@@ -140,11 +150,19 @@ class NarrowpeakDatasetWithRepeatMasking(Dataset):
 		return peak_regions
 
 	def _apply_jitter(self, start):
+		'''
+		Randomly shifts the sequence by a certain amount
+		'''
 		jitter = random.randint(-self._jitter, self._jitter)
 		start += jitter
 		return start
 	
 	def get_stretch_repeat_mask(self, dna_seq):
+		'''
+		Given a sequence, this function searches for repeat stretches
+		If it finds a consecutive stretch above a certain length, then it flags that stretch
+		Returns a binary mask of the sequence length
+		'''
 		raw_repeats = np.array([int(nuc.islower()) for nuc in dna_seq])
 		final_repeats = np.array([0] * len(raw_repeats))
 		padded = np.concatenate(([0], raw_repeats, [0]))           # shape (N+2,)
@@ -163,7 +181,11 @@ class NarrowpeakDatasetWithRepeatMasking(Dataset):
 
 
 	def __getitem__(self, idx):
-		super().__init__()
+		'''
+		Given a particular index in the dataset, produces a training sample
+		The procedure includes: shifting the sequence (if necessary), taking the central 350bp, producing the repeat mask
+		Finally, we reverse complement if necessary
+		'''
 		chrom, start, end = self.regions[idx]
 		if self.mode == "train":
 			curr_len = end - start
@@ -199,22 +221,29 @@ class BedDatasetWithRepeatMasking(Dataset):
 		return len(self.regions)
 
 	def load_regions(self):
+		'''
+		Loads a set of regions from a given input file
+		'''
 		chrom_set = set(self.chrom_list)
-		# for encid in os.listdir(self.data_dir):
-		#     curr_filename = os.path.join(self.data_dir, encid, "preprocessing/downloads/peaks.bed.gz")
-		#     if not os.path.exists(curr_filename):
-		#         continue
 		peak_data = pd.read_csv(self.peak_file, sep="\t", header=None)
 		peak_data = peak_data.loc[peak_data[0].isin(chrom_set)].reset_index(drop=True)
 
 		return peak_data
 
 	def _apply_jitter(self, start):
+		'''
+		Randomly shifts the sequence by a certain amount
+		'''
 		jitter = random.randint(-self._jitter, self._jitter)
 		start += jitter
 		return start
 	
 	def get_stretch_repeat_mask(self, dna_seq):
+		'''
+		Given a sequence, this function searches for repeat stretches
+		If it finds a consecutive stretch above a certain length, then it flags that stretch
+		Returns a binary mask of the sequence length
+		'''
 		raw_repeats = np.array([int(nuc.islower()) for nuc in dna_seq])
 		final_repeats = np.array([0] * len(raw_repeats))
 		padded = np.concatenate(([0], raw_repeats, [0]))           # shape (N+2,)
@@ -233,7 +262,11 @@ class BedDatasetWithRepeatMasking(Dataset):
 
 
 	def __getitem__(self, idx):
-		super().__init__()
+		'''
+		Given a particular index in the dataset, produces a training sample
+		The procedure includes: shifting the sequence (if necessary), taking the central 350bp, producing the repeat mask
+		Finally, we reverse complement if necessary
+		'''
 		chrom, start, end = self.regions.loc[idx, 0], self.regions.loc[idx, 1], self.regions.loc[idx, 2]
 		if self.mode == "train":
 			curr_len = end - start

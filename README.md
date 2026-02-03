@@ -2,7 +2,7 @@
 
 This repo contains all code for the ARSENAL language modeling project. 
 
-Pretrained models and relevant data not from other publications can be found at https://www.synapse.org/Synapse:syn72351987/wiki/ 
+Pretrained models and relevant data not from other publications can be found at https://www.synapse.org/Synapse:syn72351987/wiki/. Please see the wiki at this site for important information on the various files. 
 
 To set up a conda environment for this repo, run `bash setup_env.sh [ENV NAME]`
 

@@ -27,6 +27,7 @@ def run_epoch(model, dloader, device, mask_prob, num_real_tokens, repeat_weight,
     -The first part of the function produces seqs_input and seqs_labels, which are the input and labels respectively
     -Our loss function ignores the index 4, which corresponds to special characters (eg. "N") in the input
         In the labels, we set all non-predicted positions to 4 as well so they are ignored by the loss function
+    -We then calculate the language model and fourier loss and combine them according to the relevant parameters
     '''
     #If num_real_tokens are 4, then tokens are A, C, G, T, special characters, and <mask>
     lm_loss_fn = torch.nn.CrossEntropyLoss(ignore_index=num_real_tokens, reduction="none")

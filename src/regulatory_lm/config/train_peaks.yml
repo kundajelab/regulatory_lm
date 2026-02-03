@@ -6,23 +6,23 @@ embedder: InputSeqOnlyEmbedder
 encoder: TransformerLMWithROPE
 decoder: BERTStyleDecoder
 seed: 0
-data_format: bed
+data_format: bed #"bed" or "narrowpeak" depending on what type of data you have
 batch_size: 1024
-repeat_weight: 0
-fourier_loss_weight: 0.002
-motif_low: 6
-motif_high: 20
-smoothing_factor: 5
-min_stretch: 30
+repeat_weight: 0 #how much loss weight to assign long repeat stretches
+fourier_loss_weight: 0.002 #weight for Fourier loss
+motif_low: 6 #motif size lower bound for Fourier loss
+motif_high: 20 #motif size upper bound for Fourier loss
+smoothing_factor: 5 #smoothing factor for Fourier loss
+min_stretch: 30 #minimum stretch of consecutive repeats to downweight
 embedding_size: 768
-num_encoder_layers: 8
+num_encoder_layers: 8 #Number of transformer/convolution/etc. layers
 num_epochs: 300
 max_jitter: 50
 seq_len: 350
-mask_prob: 0.15
+mask_prob: 0.15 #probability of masking
 early_stopping: false
 patience: 7
-shuffle: true
+shuffle: true #shuffle data at every epoch
 train_chrom_list:  [
         "chr1",
         "chr2",
@@ -54,16 +54,14 @@ test_chrom_list: [
         "chr18",
         "chr20",
         "chr22"
-    ]
-float_dtype: bfloat16
+    ] #train/test/validation chromosomes
+
+float_dtype: bfloat16 #not used with Fourier loss
 num_real_tokens: 4
 optimizer: adamw
 optimizer_params:
   lr: 1.e-4
   weight_decay: 1.e-6
-scheduler_params:
-  warmup_perc: 0.01
-  min_lr: 1.e-4
 encoder_kwargs:
-  dim_feedforward: 3072
-  norm_first: false
+  dim_feedforward: 3072 #Feed forward dimension of transformer
+  norm_first: false #Whether transformer is "norm first" or "norm last"

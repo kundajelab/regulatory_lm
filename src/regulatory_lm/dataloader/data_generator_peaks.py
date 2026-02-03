@@ -11,6 +11,17 @@ import json
 
 class NarrowpeakDataset(Dataset):
 	def __init__(self, peak_file, genome_fa, chrom_list, mode="train", seq_len=350, rev_comp_prob=0.5, jitter=50):
+		'''
+		Dataset class for narrowpeak (10 column) data type
+		Required parameters are:
+		-peak_file: file name of list of peaks/regions
+		-genome_fa: reference genome file
+		-chrom_list: list of chromosomes to consider
+		-mode: "train" or otherwise, decides whether reverse complementing and jittering are done
+		-seq_len: sequence length to train on 
+		-rev_comp_prob: probability of reverse complementing
+		-jitter: max distance to shift the sequence
+		'''
 		self.seq_len = seq_len
 		self.peak_file = peak_file
 		self.genome = pyfaidx.Fasta(genome_fa, one_based_attributes=False, sequence_always_upper=True)
@@ -68,6 +79,17 @@ class NarrowpeakDataset(Dataset):
 
 class BedDataset(Dataset):
 	def __init__(self, peak_file, genome_fa, chrom_list, mode="train", seq_len=350, rev_comp_prob=0.5, jitter=50):
+		'''
+		Dataset class for bed (3 column) data type
+		Required parameters are:
+		-peak_file: file name of list of peaks/regions
+		-genome_fa: reference genome file
+		-chrom_list: list of chromosomes to consider
+		-mode: "train" or otherwise, decides whether reverse complementing and jittering are done
+		-seq_len: sequence length to train on 
+		-rev_comp_prob: probability of reverse complementing
+		-jitter: max distance to shift the sequence
+		'''
 		self.seq_len = seq_len
 		self.peak_file = peak_file
 		self.genome = pyfaidx.Fasta(genome_fa, one_based_attributes=False, sequence_always_upper=True)
@@ -121,6 +143,18 @@ class BedDataset(Dataset):
 
 class NarrowpeakDatasetWithRepeatMasking(Dataset):
 	def __init__(self, peak_file, genome_fa, chrom_list, mode="train", seq_len=350, rev_comp_prob=0.5, jitter=50, min_stretch=0):
+		'''
+		Dataset class for narrowpeak (10 column) data type with repeat masking
+		Required parameters are:
+		-peak_file: file name of list of peaks/regions
+		-genome_fa: reference genome file
+		-chrom_list: list of chromosomes to consider
+		-mode: "train" or otherwise, decides whether reverse complementing and jittering are done
+		-seq_len: sequence length to train on 
+		-rev_comp_prob: probability of reverse complementing
+		-jitter: max distance to shift the sequence
+		-min_stretch: minimum length of consecutive repeats to mask
+		'''
 		self.seq_len = seq_len
 		self.peak_file = peak_file
 		self.genome = pyfaidx.Fasta(genome_fa, one_based_attributes=False)
@@ -207,6 +241,18 @@ class NarrowpeakDatasetWithRepeatMasking(Dataset):
 
 class BedDatasetWithRepeatMasking(Dataset):
 	def __init__(self, peak_file, genome_fa, chrom_list, mode="train", seq_len=350, rev_comp_prob=0.5, jitter=50, min_stretch=0):
+		'''
+		Dataset class for bed (3 column) data type with repeat masking
+		Required parameters are:
+		-peak_file: file name of list of peaks/regions
+		-genome_fa: reference genome file
+		-chrom_list: list of chromosomes to consider
+		-mode: "train" or otherwise, decides whether reverse complementing and jittering are done
+		-seq_len: sequence length to train on 
+		-rev_comp_prob: probability of reverse complementing
+		-jitter: max distance to shift the sequence
+		-min_stretch: minimum length of consecutive repeats to mask
+		'''
 		self.seq_len = seq_len
 		self.peak_file = peak_file
 		self.genome = pyfaidx.Fasta(genome_fa, one_based_attributes=False)

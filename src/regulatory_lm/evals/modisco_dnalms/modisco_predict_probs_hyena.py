@@ -37,6 +37,8 @@ def predict_probs(model, dataloader, out_dir, device, optimizer=None):
 	
 	for i, seqs in enumerate(tqdm(dataloader, ncols=100, unit="batch")): #assumes motif_mask is bool tensor        
 		assert optimizer is None
+		seed_tokens = torch.full((seqs.shape[0], 1), 1, dtype=torch.long)
+		seqs = torch.cat([seed_tokens, seqs], dim=1) #Since this is an autoregressive model, we need to prepend with something, and we'll use a C for consistency
 		seqs = seqs.to(device, dtype=torch.long)
 		seqs = seqs + 7 #convert tokenization
 		_, seq_len = seqs.size()
@@ -44,7 +46,7 @@ def predict_probs(model, dataloader, out_dir, device, optimizer=None):
 
 		with torch.no_grad():
 			logits = model(seqs).logits
-			probs = F.softmax(logits, dim=-1)[:,:,7:11]
+			probs = F.softmax(logits, dim=-1)[:,:-1,7:11]
 		nuc_average = torch.mean(probs, dim=1).unsqueeze(1)
 		# nuc_average_expanded = nuc_average.unsqueeze(2)
 		normalized = probs / nuc_average

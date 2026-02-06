@@ -60,6 +60,7 @@ def predict_probs(model, dataloader, out_dir, device, optimizer=None):
 		
 		probs_norm_lst.append(probs_norm)
 		
+		seqs = seqs[:,1:]
 		one_hot = torch.zeros(seqs.shape[0], seqs.shape[1], 4, dtype=torch.int8)
 		for nuc in range(4):
 			one_hot[:, :, nuc] = (seqs - 7 == nuc).to(dtype=torch.int8)  # for non ACGT, set to 0

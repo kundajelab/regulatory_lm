@@ -7,7 +7,7 @@ Pretrained models and relevant data not from other publications can be found at 
 To set up a conda environment for this repo, run `bash setup_env.sh [ENV NAME]`
 
 # Model Training
-To train an ARSENAL model, you will need a config yml file. Examples can be found in the src/regulatory_lm/config/ folder. This file should contain all the relevant parameters for the model's embedder, encoder, and decoder modules, relevant training parameters (learning rate, number of epochs, mask probability, etc...), and relevant data files (training dataset, reference genome, etc...)
+To train an ARSENAL model, you will need a config yml file. Examples can be found in the src/regulatory_lm/config/ folder. This file should contain all the relevant parameters for the model's embedder, encoder, and decoder (lm head) modules, relevant training parameters (learning rate, number of epochs, mask probability, etc...), and relevant data files (training dataset, reference genome, etc...)
 
 You can view the modeling options in src/regulatory_lm/modeling/model.py, and an exhaustive list of the parameters used in the relevant training script. 
 

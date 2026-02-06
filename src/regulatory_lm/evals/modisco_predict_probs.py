@@ -33,6 +33,7 @@ def predict_probs(model, dataloader, num_real_tokens, out_dir, device, optimizer
 	'''
 	This function takes in a model and dataloader and predicts masked probabilities to use for Modisco from that data
 	Each probability is normalized by dividing by the average predicted probability for that nucleotide across the sequence
+	Returns a numpy array containing these masked probabilities, along with another one containing the one-hot encoded sequence
 	'''
 	# model, _, _, _ = load_model(model, None, state_path)
 	model.eval()

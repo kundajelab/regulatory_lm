@@ -32,6 +32,13 @@ class PositionalEncoding(nn.Module):
 
 class RegulatoryLM(torch.nn.Module):
     def __init__(self, input_embedder, encoder, decoder, species_emb_as_mask=False):
+        '''
+        This is the base RegulatoryLM class. A model contains three components:
+        -input_embedder, which converts input tokens to embeddings
+        -encoder, which is the bulk of the model
+        -decoder, which converts model embeddings to token predictions
+        -See the example config file for the arguments used in the paper
+        '''
         super().__init__()
         self.species_emb_as_mask = species_emb_as_mask
 

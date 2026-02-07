@@ -13,7 +13,7 @@ fourier_loss_weight: 0.002 #weight for Fourier loss
 motif_low: 6 #motif size lower bound for Fourier loss
 motif_high: 20 #motif size upper bound for Fourier loss
 smoothing_factor: 5 #smoothing factor for Fourier loss
-min_stretch: 30 #minimum stretch of consecutive repeats to downweight
+min_stretch: 30 #minimum stretch of consecutive repeats above which to downweight
 embedding_size: 768
 num_encoder_layers: 8 #Number of transformer/convolution/etc. layers
 num_epochs: 300

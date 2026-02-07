@@ -153,7 +153,7 @@ class NarrowpeakDatasetWithRepeatMasking(Dataset):
 		-seq_len: sequence length to train on 
 		-rev_comp_prob: probability of reverse complementing
 		-jitter: max distance to shift the sequence
-		-min_stretch: minimum length of consecutive repeats to mask
+		-min_stretch: minimum length of consecutive repeats above which to mask
 		'''
 		self.seq_len = seq_len
 		self.peak_file = peak_file
@@ -251,7 +251,7 @@ class BedDatasetWithRepeatMasking(Dataset):
 		-seq_len: sequence length to train on 
 		-rev_comp_prob: probability of reverse complementing
 		-jitter: max distance to shift the sequence
-		-min_stretch: minimum length of consecutive repeats to mask
+		-min_stretch: minimum length of consecutive repeats above which to mask
 		'''
 		self.seq_len = seq_len
 		self.peak_file = peak_file

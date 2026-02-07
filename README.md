@@ -24,7 +24,7 @@ We provide notebooks for important use cases of the ARSENAL model
 
 `notebooks/regulatory_region_analysis.ipynb` - runs visualization and nucleotide dependency analyses for supplied regulatory regions
 
-`notebooks/guided_generation.ipynb` - runs supervised model-guided sequence generation as demonstrated in the paper. Can easily be extended to other use cases and objectives. 
+`notebooks/guided_generation.ipynb` - runs supervised model-guided sequence generation as demonstrated in the paper. Can easily be extended to other use cases and objectives. `notebooks/chrombpnet_comparison.ipynb` demonstrates how to use the ChromBPNet model to evaluate these generations if desired. 
 
 `notebooks/supervised_variant_scoring_african.ipynb` and `notebooks/supervised_variant_scoring_yoruban.ipynb` - runs statistics on supervised variant scores (see below) - requires ground truth scores from [DART-EVAL](https://github.com/kundajelab/DART-Eval).
 

@@ -40,7 +40,7 @@ To score variants using this trained model, run the following command: `snp_scor
 
 To train a regular ChromBPNet model for comparison, run the following command: `chrombpnet train --model_type chrombpnet --out_dir [OUTPUT DIR] --peaks [PEAK FILE] --negatives [NEGATIVE FILE] --bigwig [BIGWIG FILE] --bias [BIAS MODEL FILE] --fasta [REFERENCE GENOME] --chrom_sizes [CHROM SIZES FILE]`
 
-To score variants using this trained model, run the following command: `snp_score -l [VARIANT LIST] -g [REFERENCE GENOME] -s [CHROM SIZES FILE] --model_type chrombpnet --model [BEST MODEL .pt FILE] --out_prefix [OUTPUT PREFIX/DIR] --total_shuf 2`
+To score variants using this trained model, run the following command: `snp_score -l [VARIANT LIST] -g [REFERENCE GENOME] -s [CHROM SIZES FILE] --model_type chrombpnet --model [BEST MODEL .ckpt FILE] --out_prefix [OUTPUT PREFIX/DIR] --total_shuf 2`
 
 # TF-MoDISco Analysis
 To run TF-MoDISco analysis on ARSENAL models, navigate to `src/` and run the following command: `bash regulatory_lm/evals/run_modisco_pipeline.sh [PEAK FILE] [ARSENAL MODEL DIR] [CHECKPOINT NUMBER] [OUTPUT DIR] [DATA FORMAT (bed or narrowpeak)] [REFERENCE GENOME] [MEME MOTIF DB]`

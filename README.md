@@ -30,7 +30,7 @@ We provide notebooks for important use cases of the ARSENAL model
 
 
 # Downstream Supervised Models
-To apply ARSENAL embeddings to train a downstream ChromBPNet model, [this repo](https://github.com/amanpatel101/arsenal-chrombpnet) should be installed (probably in its own environment). Note that this repo must be downloaded (but not necessarily installed) to run some of the notebooks. 
+To apply ARSENAL embeddings to train a downstream ChromBPNet model, [this repo](https://github.com/amanpatel101/arsenal-chrombpnet) should be installed (probably in its own environment). 
 
 First, run `export ARSENAL_MODEL_DIR=[PATH TO ARSENAL REPO]`
 

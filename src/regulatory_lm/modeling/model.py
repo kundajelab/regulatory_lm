@@ -536,7 +536,6 @@ class TransformerLM(torch.nn.Module):
         embs = self.transformer(x)
         return embs, embs
 
-
 class TransformerLMWithROPE(torch.nn.Module):
     def __init__(self, emb_size, n_encoder_layers, heads=8, dim_feedforward=2048, theta=10000, rope_size="full", norm_first=True):
         super().__init__()
@@ -549,6 +548,35 @@ class TransformerLMWithROPE(torch.nn.Module):
         embs = self.transformer(x)
         return embs, embs
 
+class TransformerLMWithFinalLN(torch.nn.Module):
+    def __init__(self, emb_size, n_encoder_layers, heads=8, dim_feedforward=2048, norm_first=True, layer_norm_eps=1e-5):
+        super().__init__()
+        transformer_layer = torch.nn.TransformerEncoderLayer(d_model=emb_size, nhead=heads, dim_feedforward=dim_feedforward, batch_first=True, norm_first=norm_first)
+        self.transformer = torch.nn.TransformerEncoder(transformer_layer, num_layers=n_encoder_layers)
+        self.final_ln = torch.nn.LayerNorm(emb_size, eps=layer_norm_eps) if norm_first else None
+    
+    def forward(self, x):
+        embs = self.transformer(x)
+        if self.final_ln is not None:
+            embs = self.final_ln(embs)
+        return embs, embs
+
+
+
+class TransformerLMWithROPEAndFinalLN(torch.nn.Module):
+    def __init__(self, emb_size, n_encoder_layers, heads=8, dim_feedforward=2048, theta=10000, rope_size="full", norm_first=True, layer_norm_eps=1e-5):
+        super().__init__()
+        transformer_stack = torch.nn.ModuleList([
+            TransformerROPEEncoderLayer(emb_size=emb_size, heads=heads, dim_feedforward=dim_feedforward, theta=theta, rope_size=rope_size, norm_first=norm_first) for layer in range(n_encoder_layers)
+        ])
+        self.transformer = torch.nn.Sequential(*transformer_stack)
+        self.final_ln = torch.nn.LayerNorm(emb_size, eps=layer_norm_eps) if norm_first else None
+    
+    def forward(self, x):
+        embs = self.transformer(x)
+        if self.final_ln is not None:
+            embs = self.final_ln(embs)
+        return embs, embs
 
 
 class TransformerLMWithEmbeddings(torch.nn.Module):

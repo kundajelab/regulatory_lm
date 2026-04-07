@@ -9,7 +9,7 @@ seed: 0
 data_format: bed #"bed" or "narrowpeak" depending on what type of data you have
 batch_size: 1024
 repeat_weight: 0 #how much loss weight to assign long repeat stretches
-fourier_loss_weight: 0.002 #weight for Fourier loss
+fourier_loss_weight: 0.0 #weight for Fourier loss
 motif_low: 6 #motif size lower bound for Fourier loss
 motif_high: 20 #motif size upper bound for Fourier loss
 smoothing_factor: 5 #smoothing factor for Fourier loss

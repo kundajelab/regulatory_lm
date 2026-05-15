@@ -13,9 +13,10 @@ You can view the modeling options in src/regulatory_lm/modeling/model.py, and an
 
 To train an ARSENAL model, navigate to the src/ folder and run the following command:
 
-`python regulatory_lm.modeling.train_peaks_with_repeat_suppression_and_fourier_loss [PATH_TO_CONFIG]`
+`python -m regulatory_lm.modeling.train_peaks_with_repeat_suppression_and_fourier_loss [PATH_TO_CONFIG]`
 
-To train a model without the Fourier attribution loss for comparison, simply set the loss weight to 0 in the config. 
+Note that this script implements the Fourier attribution loss described in the paper's addendum. To disable this loss as is done in the paper's main text, simply set the loss weight to 0 in the config file. This is done by default. 
+ 
 
 # Important Notebooks
 We provide notebooks for important use cases of the ARSENAL model

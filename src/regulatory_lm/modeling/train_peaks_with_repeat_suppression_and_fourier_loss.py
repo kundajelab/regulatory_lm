@@ -98,7 +98,7 @@ smoothing_factor, seq_len,  optimizer_cls, optimizer_params):
             counter = 0 #new ES
         best_valid_epoch_loss = float("inf")
         for epoch in range(num_epochs):
-            if torch.cuda.is_available:
+            if torch.cuda.is_available():
                 torch.cuda.empty_cache()
 
             model.train()

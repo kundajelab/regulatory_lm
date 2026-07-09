@@ -87,7 +87,7 @@ def train_model(model, train_loader, valid_loader, num_epochs, output_dir, early
             counter = 0 #new ES
         best_valid_epoch_loss = float("inf")
         for epoch in range(num_epochs):
-            if torch.cuda.is_available:
+            if torch.cuda.is_available():
                 torch.cuda.empty_cache()
 
             model.train()
@@ -147,11 +147,11 @@ def main():
     model_kwargs = args.get("model_kwargs", {})
 
     if args["data_format"] == "narrowpeak":
-        train_dataset = NarrowpeakDatasetWithRepeatMasking(args["peak_file"], args["genome"], args["train_chrom_list"], mode="train", jitter=args["max_jitter"]) #LOAD TRAIN DATALOADER USING ARGS
-        valid_dataset = NarrowpeakDatasetWithRepeatMasking(args["peak_file"], args["genome"], args["valid_chrom_list"], mode="valid", jitter=args["max_jitter"]) #LOAD VALID DATALOADER USING ARGS
+        train_dataset = NarrowpeakDatasetWithRepeatMasking(args["peak_file"], args["genome"], args["train_chrom_list"], mode="train", jitter=args["max_jitter"], seq_len=args["seq_len"]) #LOAD TRAIN DATALOADER USING ARGS
+        valid_dataset = NarrowpeakDatasetWithRepeatMasking(args["peak_file"], args["genome"], args["valid_chrom_list"], mode="valid", jitter=args["max_jitter"], seq_len=args["seq_len"]) #LOAD VALID DATALOADER USING ARGS
     elif args["data_format"] == "bed":
-        train_dataset = BedDatasetWithRepeatMasking(args["peak_file"], args["genome"], args["train_chrom_list"], mode="train", jitter=args["max_jitter"]) #LOAD TRAIN DATALOADER USING ARGS
-        valid_dataset = BedDatasetWithRepeatMasking(args["peak_file"], args["genome"], args["valid_chrom_list"], mode="valid", jitter=args["max_jitter"]) #LOAD VALID DATALOADER USING ARGS
+        train_dataset = BedDatasetWithRepeatMasking(args["peak_file"], args["genome"], args["train_chrom_list"], mode="train", jitter=args["max_jitter"], seq_len=args["seq_len"]) #LOAD TRAIN DATALOADER USING ARGS
+        valid_dataset = BedDatasetWithRepeatMasking(args["peak_file"], args["genome"], args["valid_chrom_list"], mode="valid", jitter=args["max_jitter"], seq_len=args["seq_len"]) #LOAD VALID DATALOADER USING ARGS
         
     train_loader = DataLoader(train_dataset, batch_size=args["batch_size"], shuffle=True, pin_memory=True, num_workers=1, drop_last=True)
     valid_loader = DataLoader(valid_dataset, batch_size=args["batch_size"], shuffle=False, pin_memory=True, num_workers=1)

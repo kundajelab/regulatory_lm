@@ -25,6 +25,7 @@ class NarrowpeakDataset(Dataset):
 		self.seq_len = seq_len
 		self.peak_file = peak_file
 		self.genome = pyfaidx.Fasta(genome_fa, one_based_attributes=False, sequence_always_upper=True)
+		self.chrom_sizes = {chrom: len(self.genome[chrom]) for chrom in chrom_list}
 		self.mode = mode
 		self._rev_comp_prob = rev_comp_prob
 		self._jitter = jitter
@@ -35,21 +36,26 @@ class NarrowpeakDataset(Dataset):
 		return len(self.regions)
 
 	def load_regions(self):
-		'''
+		"""
 		Loads a set of regions from a given input file
-		'''
+		"""
 		chrom_set = set(self.chrom_list)
-		peak_regions = []
-		# for encid in os.listdir(self.data_dir):
-		#     curr_filename = os.path.join(self.data_dir, encid, "preprocessing/downloads/peaks.bed.gz")
-		#     if not os.path.exists(curr_filename):
-		#         continue
 		peak_data = pd.read_csv(self.peak_file, sep="\t", header=None)
-		peak_data = peak_data.loc[peak_data[0].isin(chrom_set)].reset_index(drop=True)
+		peak_data = peak_data.loc[peak_data[0].isin(chrom_set)].copy()
+
 		peak_data["true_start"] = peak_data[1] + peak_data[9] - self.seq_len // 2
 		peak_data["true_end"] = peak_data["true_start"] + self.seq_len
-		for reg in range(len(peak_data)):
-			peak_regions.append((peak_data.loc[reg, 0], peak_data.loc[reg, "true_start"], peak_data.loc[reg, "true_end"]))
+
+		chrom_sizes = peak_data[0].map(self.chrom_sizes)
+
+		peak_data = peak_data.loc[
+			(peak_data["true_start"] - self._jitter >= 0) &
+			(peak_data["true_end"] + self._jitter <= chrom_sizes)
+		].reset_index(drop=True)
+
+		peak_regions = list(
+			zip(peak_data[0], peak_data["true_start"], peak_data["true_end"])
+		)
 
 		return peak_regions
 
@@ -93,6 +99,7 @@ class BedDataset(Dataset):
 		self.seq_len = seq_len
 		self.peak_file = peak_file
 		self.genome = pyfaidx.Fasta(genome_fa, one_based_attributes=False, sequence_always_upper=True)
+		self.chrom_sizes = {chrom: len(self.genome[chrom]) for chrom in chrom_list}
 		self.mode = mode
 		self._rev_comp_prob = rev_comp_prob
 		self._jitter = jitter
@@ -106,17 +113,22 @@ class BedDataset(Dataset):
 		'''
 		Loads a set of regions from a given input file
 		'''
-
 		chrom_set = set(self.chrom_list)
-		# for encid in os.listdir(self.data_dir):
-		#     curr_filename = os.path.join(self.data_dir, encid, "preprocessing/downloads/peaks.bed.gz")
-		#     if not os.path.exists(curr_filename):
-		#         continue
 		peak_data = pd.read_csv(self.peak_file, sep="\t", header=None)
-		peak_data = peak_data.loc[peak_data[0].isin(chrom_set)].reset_index(drop=True)
+		peak_data = peak_data.loc[peak_data[0].isin(chrom_set)].copy()
+
+		peak_data["chrom_size"] = peak_data[0].map(self.chrom_sizes)
+		peak_data["curr_len"] = peak_data[2] - peak_data[1]
+		peak_data["buffer"] = (self.seq_len - peak_data["curr_len"]) // 2
+		peak_data["left"] = peak_data[1] - peak_data["buffer"]
+		peak_data["right"] = peak_data["left"] + self.seq_len
+
+		peak_data = peak_data.loc[
+			(peak_data["left"] - self._jitter >= 0) &
+			(peak_data["right"] + self._jitter <= peak_data["chrom_size"])
+		].reset_index(drop=True)
 
 		return peak_data
-
 
 
 	def _apply_jitter(self, start):
@@ -158,6 +170,7 @@ class NarrowpeakDatasetWithRepeatMasking(Dataset):
 		self.seq_len = seq_len
 		self.peak_file = peak_file
 		self.genome = pyfaidx.Fasta(genome_fa, one_based_attributes=False)
+		self.chrom_sizes = {chrom: len(self.genome[chrom]) for chrom in chrom_list}
 		self.mode = mode
 		self._rev_comp_prob = rev_comp_prob
 		self._jitter = jitter
@@ -169,19 +182,29 @@ class NarrowpeakDatasetWithRepeatMasking(Dataset):
 		return len(self.regions)
 
 	def load_regions(self):
-		'''
+		"""
 		Loads a set of regions from a given input file
-		'''
+		"""
 		chrom_set = set(self.chrom_list)
-		peak_regions = []
 		peak_data = pd.read_csv(self.peak_file, sep="\t", header=None)
-		peak_data = peak_data.loc[peak_data[0].isin(chrom_set)].reset_index(drop=True)
+		peak_data = peak_data.loc[peak_data[0].isin(chrom_set)].copy()
+
 		peak_data["true_start"] = peak_data[1] + peak_data[9] - self.seq_len // 2
 		peak_data["true_end"] = peak_data["true_start"] + self.seq_len
-		for reg in range(len(peak_data)):
-			peak_regions.append((peak_data.loc[reg, 0], peak_data.loc[reg, "true_start"], peak_data.loc[reg, "true_end"]))
+
+		chrom_sizes = peak_data[0].map(self.chrom_sizes)
+
+		peak_data = peak_data.loc[
+			(peak_data["true_start"] - self._jitter >= 0) &
+			(peak_data["true_end"] + self._jitter <= chrom_sizes)
+		].reset_index(drop=True)
+
+		peak_regions = list(
+			zip(peak_data[0], peak_data["true_start"], peak_data["true_end"])
+		)
 
 		return peak_regions
+	
 
 	def _apply_jitter(self, start):
 		'''
@@ -236,7 +259,7 @@ class NarrowpeakDatasetWithRepeatMasking(Dataset):
 		if self.mode == "train" and random.random() < self._rev_comp_prob:
 			seq = rev_comp(seq)
 			is_repeat = is_repeat[::-1]
-		return torch.from_numpy(seq), torch.tensor(is_repeat)
+		return torch.tensor(seq, dtype=torch.long), torch.tensor(is_repeat, dtype=torch.long)
 
 
 class BedDatasetWithRepeatMasking(Dataset):
@@ -256,6 +279,7 @@ class BedDatasetWithRepeatMasking(Dataset):
 		self.seq_len = seq_len
 		self.peak_file = peak_file
 		self.genome = pyfaidx.Fasta(genome_fa, one_based_attributes=False)
+		self.chrom_sizes = {chrom: len(self.genome[chrom]) for chrom in chrom_list}
 		self.mode = mode
 		self._rev_comp_prob = rev_comp_prob
 		self._jitter = jitter
@@ -272,7 +296,18 @@ class BedDatasetWithRepeatMasking(Dataset):
 		'''
 		chrom_set = set(self.chrom_list)
 		peak_data = pd.read_csv(self.peak_file, sep="\t", header=None)
-		peak_data = peak_data.loc[peak_data[0].isin(chrom_set)].reset_index(drop=True)
+		peak_data = peak_data.loc[peak_data[0].isin(chrom_set)].copy()
+
+		peak_data["chrom_size"] = peak_data[0].map(self.chrom_sizes)
+		peak_data["curr_len"] = peak_data[2] - peak_data[1]
+		peak_data["buffer"] = (self.seq_len - peak_data["curr_len"]) // 2
+		peak_data["left"] = peak_data[1] - peak_data["buffer"]
+		peak_data["right"] = peak_data["left"] + self.seq_len
+
+		peak_data = peak_data.loc[
+			(peak_data["left"] - self._jitter >= 0) &
+			(peak_data["right"] + self._jitter <= peak_data["chrom_size"])
+		].reset_index(drop=True)
 
 		return peak_data
 
@@ -329,7 +364,7 @@ class BedDatasetWithRepeatMasking(Dataset):
 		if self.mode == "train" and random.random() < self._rev_comp_prob:
 			seq = rev_comp(seq)
 			is_repeat = is_repeat[::-1]
-		return torch.from_numpy(seq), torch.tensor(is_repeat)
+		return torch.tensor(seq, dtype=torch.long), torch.tensor(is_repeat, dtype=torch.long)
 
 
 class BedDatasetWithComponents(Dataset):
@@ -337,6 +372,7 @@ class BedDatasetWithComponents(Dataset):
 		self.seq_len = seq_len
 		self.peak_file = peak_file
 		self.genome = pyfaidx.Fasta(genome_fa, one_based_attributes=False, sequence_always_upper=True)
+		self.chrom_sizes = {chrom: len(self.genome[chrom]) for chrom in chrom_list}
 		self.mode = mode
 		self._rev_comp_prob = rev_comp_prob
 		self._jitter = jitter
@@ -348,9 +384,24 @@ class BedDatasetWithComponents(Dataset):
 		return len(self.component_list)
 
 	def load_regions(self):
+		'''
+		Loads a set of regions from a given input file
+		'''
 		chrom_set = set(self.chrom_list)
 		peak_data = pd.read_csv(self.peak_file, sep="\t", header=None)
-		peak_data = peak_data.loc[peak_data[0].isin(chrom_set)].reset_index(drop=True)
+		peak_data = peak_data.loc[peak_data[0].isin(chrom_set)].copy()
+
+		peak_data["chrom_size"] = peak_data[0].map(self.chrom_sizes)
+		peak_data["curr_len"] = peak_data[2] - peak_data[1]
+		peak_data["buffer"] = (self.seq_len - peak_data["curr_len"]) // 2
+		peak_data["left"] = peak_data[1] - peak_data["buffer"]
+		peak_data["right"] = peak_data["left"] + self.seq_len
+
+		peak_data = peak_data.loc[
+			(peak_data["left"] - self._jitter >= 0) &
+			(peak_data["right"] + self._jitter <= peak_data["chrom_size"])
+		].reset_index(drop=True)
+
 		return peak_data
 
 	def load_components(self):
@@ -384,4 +435,4 @@ class BedDatasetWithComponents(Dataset):
 		seq = np.array(encode_sequence(dna_seq.upper()))
 		if self.mode == "train" and random.random() < self._rev_comp_prob:
 			seq = rev_comp(seq)
-		return torch.from_numpy(seq)
+		return torch.tensor(seq, dtype=torch.long)
